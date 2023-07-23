@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId       String      @id @default(cuid())
+  name         String
+  email        String      @unique
+  password     String
+  phone_number String
+  user_active  Boolean     @default(true)
+  role         RoleOptions @default(USER)
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
+  address      Address?
+
+  @@map("users")
+}
+
+model Address {
+  addressId  String   @id @default(cuid())
+  number     Int
+  street     String
+  district   String
+  zip_code   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user_id String @unique
+  user    User   @relation(fields: [user_id], references: [userId])
+
+  @@map("addresses")
+}
+
+enum RoleOptions {
+  USER
+  OWNER
+  ADMIN
+}
+
+model Product {
+  productId   String   @id @default(cuid())
+  name        String
+  description String
+  size        String
+  price       Decimal
+  imageUrl    String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  category_id  Int
+  categoria    Category       @relation(fields: [category_id], references: [categoryId])
+  orderProduct OrderProduct[]
+
+  @@map("products")
+}
+
+model Category {
+  categoryId Int       @id @default(autoincrement())
+  name       String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  products   Product[]
+
+  @@map("categories")
+}
+
+model Order {
+  orderId    String      @id @default(cuid())
+  status     OrderStatus @default(WAITING_EVALUATION)
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+
+  orderProduct OrderProduct[]
+
+  @@map("orders")
+}
+
+enum OrderStatus {
+  WAITING_EVALUATION
+  REPROVED
+  CANCELLED
+  IN_PROGRESS
+  IN_TRANSPORT
+  FINISHED
+}
+
+model OrderProduct {
+  orderProductId String   @id @default(cuid())
+  quantity       Int
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  order      Order   @relation(fields: [order_id], references: [orderId])
+  product    Product @relation(fields: [product_id], references: [productId])
+  order_id   String
+  product_id String
+
+  @@map("orders_products")
+}
