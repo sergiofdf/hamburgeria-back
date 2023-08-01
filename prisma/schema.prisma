@@ -54,7 +54,7 @@ model Product {
   updated_at  DateTime @updatedAt
 
   category_id  Int
-  categoria    Category       @relation(fields: [category_id], references: [categoryId])
+  category     Category       @relation(fields: [category_id], references: [categoryId])
   orderProduct OrderProduct[]
 
   @@map("products")

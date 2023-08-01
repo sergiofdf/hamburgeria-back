@@ -4,16 +4,17 @@ import { UsersModule } from './modules/users/users.module';
 import { PrismaService } from './prisma.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
+import { ProductsModule } from './modules/products/products.module';
 
 @Module({
-  imports: [UsersModule, AuthModule],
+  imports: [UsersModule, AuthModule, ProductsModule],
   controllers: [],
   providers: [
     PrismaService,
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: JwtAuthGuard,
+    // },
   ],
 })
 export class AppModule {}
