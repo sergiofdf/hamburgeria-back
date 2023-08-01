@@ -13,11 +13,17 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { IsPublic } from '../auth/decorators/is-public.decorator';
+import { IsPublic } from '../../shared/decorators/is-public.decorator';
+import { CurrentUser } from '../../shared/decorators/current-user.decorator';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get('me')
+  getMe(@CurrentUser() user: User) {
+    return user;
+  }
 
   @Post()
   @IsPublic()
