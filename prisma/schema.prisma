@@ -49,7 +49,7 @@ model Product {
   description String
   size        String
   price       Decimal
-  imageUrl    String
+  imageUrl    String?
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 

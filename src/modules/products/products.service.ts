@@ -34,23 +34,21 @@ export class ProductsService {
   }
 
   async findOneCategory(id: number) {
-    return await this.prisma.category.findFirst({
-      where: {
-        categoryId: id,
-      },
-    });
-  }
-
-  async updateCategory(id: number, categoryDto: CategoryDto) {
-    const category = await this.prisma.category.findUnique({
+    const category = await this.prisma.category.findFirst({
       where: {
         categoryId: id,
       },
     });
 
     if (!category) {
-      throw new NotFoundException('Categoria não encontrada.');
+      throw new NotFoundException('Categoria não encontrada');
     }
+
+    return category;
+  }
+
+  async updateCategory(id: number, categoryDto: CategoryDto) {
+    await this.findOneCategory(id);
 
     const updatedCategory = await this.prisma.category.update({
       where: {
@@ -62,15 +60,7 @@ export class ProductsService {
   }
 
   async removeCategory(id: number) {
-    const category = await this.prisma.category.findUnique({
-      where: {
-        categoryId: id,
-      },
-    });
-
-    if (!category) {
-      throw new NotFoundException('Categoria não encontrada.');
-    }
+    await this.findOneCategory(id);
 
     await this.prisma.category.delete({
       where: {
@@ -80,23 +70,58 @@ export class ProductsService {
   }
 
   //Produtos
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  async create(createProductDto: CreateProductDto) {
+    const productExists = await this.prisma.product.findFirst({
+      where: {
+        name: createProductDto.name,
+      },
+    });
+
+    if (productExists) {
+      throw new BadRequestException('Produto já cadastrado.');
+    }
+
+    return await this.prisma.product.create({
+      data: createProductDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all products`;
+  async findAll() {
+    return await this.prisma.product.findMany({});
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} product`;
+  async findOne(id: string) {
+    const product = await this.prisma.product.findFirst({
+      where: {
+        productId: id,
+      },
+    });
+
+    if (!product) {
+      throw new NotFoundException('Produto não encontrado.');
+    }
+
+    return product;
   }
 
-  update(id: string, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: string, updateProductDto: UpdateProductDto) {
+    await this.findOne(id);
+
+    const updatedProduct = await this.prisma.product.update({
+      where: {
+        productId: id,
+      },
+      data: updateProductDto,
+    });
+    return updatedProduct;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} product`;
+  async remove(id: string) {
+    await this.findOne(id);
+    await this.prisma.product.delete({
+      where: {
+        productId: id,
+      },
+    });
   }
 }

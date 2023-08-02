@@ -10,5 +10,4 @@ export class Product {
   created_at?: string | Date;
   updated_at?: string | Date;
   category_id?: number;
-  category?: Category;
 }

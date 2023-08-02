@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  NotFoundException,
   HttpCode,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
@@ -31,11 +30,7 @@ export class ProductsController {
 
   @Get('category/:id')
   async findOneCategory(@Param('id') id: string) {
-    const result = await this.productsService.findOneCategory(+id);
-    if (!result) {
-      throw new NotFoundException('Categoria não encontrada');
-    }
-    return result;
+    return await this.productsService.findOneCategory(+id);
   }
 
   @Patch('category/:id')
@@ -77,6 +72,7 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @HttpCode(204)
   async remove(@Param('id') id: string) {
     return this.productsService.remove(id);
   }
