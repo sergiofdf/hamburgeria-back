@@ -27,8 +27,8 @@ export class UsersController {
 
   @Post()
   @IsPublic()
-  create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return await this.usersService.create(createUserDto);
   }
 
   @Get()
@@ -39,34 +39,32 @@ export class UsersController {
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<User> {
-    const result = await this.usersService.findOne(id);
-    if (!result) {
-      throw new NotFoundException('Usuário não encontrado');
-    }
-    return result;
+    return await this.usersService.findOne(id);
   }
 
   @Post('find-by-email')
   async findOneByEmail(@Body() body): Promise<User> {
     const { email } = body;
-    const result = await this.usersService.findOneByEmail(email);
-    if (!result) {
-      throw new NotFoundException('Usuário não encontrado');
-    }
-    return result;
+    return await this.usersService.findOneByEmail(email);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
-    return this.usersService.update(id, updateUserDto);
+    return await this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string): Promise<void> {
-    return this.usersService.remove(id);
+  async remove(@Param('id') id: string): Promise<void> {
+    return await this.usersService.remove(id);
+  }
+
+  @Patch(':id')
+  @HttpCode(204)
+  async Deactivate(@Param('id') id: string): Promise<void> {
+    return await this.usersService.deactivate(id);
   }
 }

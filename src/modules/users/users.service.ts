@@ -80,13 +80,13 @@ export class UsersService {
       },
     });
 
-    if (!user) return null;
+    if (!user) throw new NotFoundException();
     const addressResponse = { ...user.address, user_id: undefined };
     return { ...user, password: undefined, address: addressResponse };
   }
 
   async findOneByEmail(email: string): Promise<User> {
-    return await this.prismaClient.user.findUnique({
+    const user = await this.prismaClient.user.findUnique({
       where: {
         email,
       },
@@ -94,16 +94,16 @@ export class UsersService {
         address: true,
       },
     });
+
+    if (!user) throw new NotFoundException();
+
+    return user;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const { address, ...data } = updateUserDto;
 
-    const userExists = await this.findOne(id);
-
-    if (!userExists) {
-      throw new NotFoundException('Usuário não cadastrado.');
-    }
+    await this.findOne(id);
 
     if (data.password) {
       data.password = bcrypt.hashSync(data.password, 10);
@@ -132,23 +132,24 @@ export class UsersService {
   }
 
   async remove(id: string) {
-    const userExists = await this.findOne(id);
-
-    if (!userExists) {
-      throw new NotFoundException('Usuário não encontrado.');
-    }
-
-    if (userExists.address) {
-      await this.prismaClient.address.delete({
-        where: {
-          user_id: id,
-        },
-      });
-    }
+    await this.findOne(id);
 
     await this.prismaClient.user.delete({
       where: {
         userId: id,
+      },
+    });
+  }
+
+  async deactivate(id: string): Promise<void> {
+    await this.findOne(id);
+
+    await this.prismaClient.user.update({
+      where: {
+        userId: id,
+      },
+      data: {
+        user_active: false,
       },
     });
   }
