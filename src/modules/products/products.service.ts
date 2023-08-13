@@ -124,4 +124,29 @@ export class ProductsService {
       },
     });
   }
+
+  async updateImageUrl(productId: string, fileUrl: string) {
+    await this.prisma.product.update({
+      where: {
+        productId,
+      },
+      data: {
+        imageUrl: fileUrl,
+      },
+    });
+  }
+
+  async getImageUrl(productId: string) {
+    const product = await this.prisma.product.findFirst({
+      where: {
+        productId,
+      },
+    });
+
+    if (!product.imageUrl) {
+      throw new NotFoundException('Imagem não cadastrada!');
+    }
+
+    return product.imageUrl;
+  }
 }

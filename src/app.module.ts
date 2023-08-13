@@ -6,6 +6,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { ProductsModule } from './modules/products/products.module';
 import { OrdersModule } from './modules/orders/orders.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [UsersModule, AuthModule, ProductsModule, OrdersModule],

@@ -7,11 +7,17 @@ import {
   Param,
   Delete,
   HttpCode,
+  UseInterceptors,
+  UploadedFile,
+  Res,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { CategoryDto } from './dto/category.dto';
 import { Product } from './entities/product.entity';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import path from 'path';
 
 @Controller('products')
 export class ProductsController {
@@ -75,5 +81,34 @@ export class ProductsController {
   @HttpCode(204)
   async remove(@Param('id') id: string) {
     return this.productsService.remove(id);
+  }
+
+  @Post('uploadImage/:id')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/productsImages/',
+        filename: (req, file, cb) => {
+          const removedChars = file.originalname.replace(/\s/g, '');
+          const preName = Date.now().toString();
+          const filename: string = preName + '_' + removedChars;
+
+          cb(null, `${filename}`);
+        },
+      }),
+    }),
+  )
+  async uploadFile(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    await this.productsService.updateImageUrl(id, file.filename);
+    return { imagePath: file.filename };
+  }
+
+  @Get('getImage/:id')
+  async findProductImage(@Param('id') id: string, @Res() res) {
+    const imageUrl = await this.productsService.getImageUrl(id);
+    return res.sendFile(process.cwd() + '/uploads/productsImages/' + imageUrl);
   }
 }
