@@ -5,9 +5,10 @@ import { PrismaService } from './prisma.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { ProductsModule } from './modules/products/products.module';
+import { OrdersModule } from './modules/orders/orders.module';
 
 @Module({
-  imports: [UsersModule, AuthModule, ProductsModule],
+  imports: [UsersModule, AuthModule, ProductsModule, OrdersModule],
   controllers: [],
   providers: [
     PrismaService,
