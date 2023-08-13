@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { IsPublic } from '../../shared/decorators/is-public.decorator';
 import { CurrentUser } from '../../shared/decorators/current-user.decorator';
@@ -51,7 +50,7 @@ export class UsersController {
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() updateUserDto: Partial<User>,
   ): Promise<User> {
     return await this.usersService.update(id, updateUserDto);
   }

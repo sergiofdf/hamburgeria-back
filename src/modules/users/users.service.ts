@@ -4,7 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../../prisma.service';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
@@ -100,7 +99,7 @@ export class UsersService {
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(id: string, updateUserDto: Partial<User>): Promise<User> {
     const { address, ...data } = updateUserDto;
 
     await this.findOne(id);

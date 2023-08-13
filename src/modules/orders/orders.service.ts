@@ -2,8 +2,8 @@ import { AddProductDto } from './dto/add-product.dto';
 import { PrismaService } from './../../prisma.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderProductDto } from './dto/update-order-product.dto';
 import { Order } from './entities/order.entity';
+import { OrderProduct } from './entities/order-product.entity';
 
 @Injectable()
 export class OrdersService {
@@ -28,6 +28,9 @@ export class OrdersService {
     const order = await this.prisma.order.findFirst({
       where: {
         orderId: id,
+      },
+      include: {
+        orderProduct: true,
       },
     });
 
@@ -66,7 +69,7 @@ export class OrdersService {
     });
   }
 
-  async updateProductsFromOrder(productsToUpdate: UpdateOrderProductDto[]) {
+  async updateProductsFromOrder(productsToUpdate: Partial<OrderProduct>[]) {
     productsToUpdate.forEach(async (product) => {
       await this.prisma.orderProduct.update({
         data: product,
@@ -77,12 +80,11 @@ export class OrdersService {
     });
   }
 
-  async removeProductsFromOrder(productsToRemove: AddProductDto[]) {
+  async removeProductsFromOrder(productsToRemove: Partial<OrderProduct>[]) {
     productsToRemove.forEach(async (product) => {
-      await this.prisma.orderProduct.deleteMany({
+      await this.prisma.orderProduct.delete({
         where: {
-          product_id: product.product_id,
-          order_id: product.order_id,
+          orderProductId: product.orderProductId,
         },
       });
     });
