@@ -4,6 +4,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { Order } from './entities/order.entity';
 import { OrderProduct } from './entities/order-product.entity';
+import { UpdateOrderProductDto } from './dto/update-order-product.dto';
+import { RemoveOrderProductDto } from './dto/remove-order-product.dto';
 
 @Injectable()
 export class OrdersService {
@@ -69,7 +71,7 @@ export class OrdersService {
     });
   }
 
-  async updateProductsFromOrder(productsToUpdate: Partial<OrderProduct>[]) {
+  async updateProductsFromOrder(productsToUpdate: UpdateOrderProductDto[]) {
     productsToUpdate.forEach(async (product) => {
       await this.prisma.orderProduct.update({
         data: product,
@@ -80,7 +82,7 @@ export class OrdersService {
     });
   }
 
-  async removeProductsFromOrder(productsToRemove: Partial<OrderProduct>[]) {
+  async removeProductsFromOrder(productsToRemove: RemoveOrderProductDto[]) {
     productsToRemove.forEach(async (product) => {
       await this.prisma.orderProduct.delete({
         where: {
