@@ -2,10 +2,9 @@ import { AddProductDto } from './dto/add-product.dto';
 import { PrismaService } from './../../prisma.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { Order } from './entities/order.entity';
-import { OrderProduct } from './entities/order-product.entity';
 import { UpdateOrderProductDto } from './dto/update-order-product.dto';
 import { RemoveOrderProductDto } from './dto/remove-order-product.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -43,7 +42,7 @@ export class OrdersService {
     return order;
   }
 
-  async update(id: string, updateOrderDto: Partial<Order>) {
+  async update(id: string, updateOrderDto: UpdateOrderDto) {
     await this.findOne(id);
 
     const updatedOrder = await this.prisma.order.update({

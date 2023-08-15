@@ -39,3 +39,20 @@ export class OrderResponseSwagger {
   @ApiProperty({ type: [OrderProduct] })
   orderProduct: OrderProduct[];
 }
+
+export class OrderResponseSwaggerWithoutOrderProducts {
+  @ApiProperty()
+  orderId: string;
+
+  @ApiProperty()
+  status: string;
+
+  @ApiProperty({ format: 'date-time' })
+  created_at: string;
+
+  @ApiProperty({ format: 'date-time' })
+  updated_at: string;
+
+  @ApiProperty()
+  user_id: string;
+}

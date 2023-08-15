@@ -1,15 +1,15 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { Order } from './entities/order.entity';
 import { AddProductDto } from './dto/add-product.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RequestErrorSwagger } from '../../shared/swagger/request-error.swagger';
 import { UnauthorizedSwagger } from '../../shared/swagger/unauthorized.swagger';
 import { ResponseCountMany } from '../../shared/swagger/response-count-many.swagger';
-import { OrderResponseSwagger } from './swagger/order-response.swagger';
+import { OrderResponseSwagger, OrderResponseSwaggerWithoutOrderProducts } from './swagger/order-response.swagger';
 import { UpdateOrderProductDto } from './dto/update-order-product.dto';
 import { RemoveOrderProductDto } from './dto/remove-order-product.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
 
 @ApiTags('Orders')
 @ApiBearerAuth()
@@ -77,11 +77,11 @@ export class OrdersController {
   }
 
   @ApiOperation({ summary: 'Atualiza pedido pelo Id informado.' })
-  @ApiResponse({ status: 200, description: 'Pedido atualizado com sucesso.', type: OrderResponseSwagger })
+  @ApiResponse({ status: 200, description: 'Pedido atualizado com sucesso.', type: OrderResponseSwaggerWithoutOrderProducts })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateOrderDto: Partial<Order>) {
+  async update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     console.log(updateOrderDto);
     return await this.ordersService.update(id, updateOrderDto);
   }
