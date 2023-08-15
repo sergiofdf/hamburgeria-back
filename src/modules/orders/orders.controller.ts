@@ -60,7 +60,12 @@ export class OrdersController {
   }
 
   @ApiOperation({ summary: 'Lista pedidos cadastrados no sistema.' })
-  @ApiResponse({ status: 200, description: 'Lista de pedidos encontrada com sucesso.', type: OrderResponseSwagger, isArray: true })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de pedidos encontrada com sucesso.',
+    type: OrderResponseSwagger,
+    isArray: true,
+  })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   @Get()
   async findAll() {
@@ -77,12 +82,15 @@ export class OrdersController {
   }
 
   @ApiOperation({ summary: 'Atualiza pedido pelo Id informado.' })
-  @ApiResponse({ status: 200, description: 'Pedido atualizado com sucesso.', type: OrderResponseSwaggerWithoutOrderProducts })
+  @ApiResponse({
+    status: 200,
+    description: 'Pedido atualizado com sucesso.',
+    type: OrderResponseSwaggerWithoutOrderProducts,
+  })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    console.log(updateOrderDto);
     return await this.ordersService.update(id, updateOrderDto);
   }
 

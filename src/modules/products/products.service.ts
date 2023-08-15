@@ -1,12 +1,8 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { PrismaService } from 'src/prisma.service';
 import { CategoryDto } from './dto/category.dto';
-import { Product } from './entities/product.entity';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -104,7 +100,7 @@ export class ProductsService {
     return product;
   }
 
-  async update(id: string, updateProductDto: Partial<Product>) {
+  async update(id: string, updateProductDto: UpdateProductDto) {
     await this.findOne(id);
 
     const updatedProduct = await this.prisma.product.update({
@@ -143,8 +139,8 @@ export class ProductsService {
       },
     });
 
-    if (!product.imageUrl) {
-      throw new NotFoundException('Imagem não cadastrada!');
+    if (!product) {
+      throw new NotFoundException('Imagem não encontrada!');
     }
 
     return product.imageUrl;

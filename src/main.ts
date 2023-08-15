@@ -19,9 +19,6 @@ async function bootstrap() {
     .setTitle('Hamburgueria')
     .setDescription('Sistema para controle de usuarios, produtos e pedidos.')
     .setVersion('1.0')
-    .addTag('login')
-    .addTag('usuarios')
-    .addTag('produtos')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);

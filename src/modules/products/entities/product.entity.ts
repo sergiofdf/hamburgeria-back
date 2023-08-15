@@ -1,13 +1,22 @@
-import { Category } from '@prisma/client';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class Product {
+  @ApiProperty()
   productId: string;
+  @ApiProperty()
   name: string;
+  @ApiProperty()
   description: string;
+  @ApiProperty()
   size: string;
+  @ApiProperty()
   price: number;
+  @ApiProperty()
   imageUrl?: string;
-  created_at?: string | Date;
-  updated_at?: string | Date;
+  @ApiProperty({ format: 'date-time' })
+  created_at?: string;
+  @ApiProperty({ format: 'date-time' })
+  updated_at?: string;
+  @ApiProperty()
   category_id?: number;
 }
