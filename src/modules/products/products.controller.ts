@@ -22,6 +22,9 @@ import { RequestErrorSwagger } from '../../shared/swagger/request-error.swagger'
 import { UnauthorizedSwagger } from '../../shared/swagger/unauthorized.swagger';
 import { Category } from './entities/category.entity';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { Roles } from '../../shared/decorators/roles.decorator';
+import { RoleOptions } from '@prisma/client';
+import { IsPublic } from '../../shared/decorators/is-public.decorator';
 
 @ApiTags('Products')
 @ApiBearerAuth()
@@ -34,6 +37,7 @@ export class ProductsController {
   @ApiResponse({ status: 201, description: 'Categoria adicionada com sucesso', type: Category })
   @ApiResponse({ status: 400, description: 'Dado inválido', type: RequestErrorSwagger })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
+  @Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
   @Post('category')
   async createCategory(@Body() categoryDto: CategoryDto) {
     return await this.productsService.createCategory(categoryDto);
@@ -47,6 +51,7 @@ export class ProductsController {
     isArray: true,
   })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
+  @IsPublic()
   @Get('category')
   async findAllCategories() {
     return await this.productsService.findAllCategories();
@@ -56,6 +61,7 @@ export class ProductsController {
   @ApiResponse({ status: 200, description: 'Categoria encontrada com sucesso.', type: Category })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
+  @IsPublic()
   @Get('category/:id')
   async findOneCategory(@Param('id') id: number) {
     return await this.productsService.findOneCategory(+id);
@@ -65,6 +71,7 @@ export class ProductsController {
   @ApiResponse({ status: 200, description: 'Categoria atualizada com sucesso.', type: Category })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
+  @Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
   @Patch('category/:id')
   async updateCategory(@Param('id') id: number, @Body() categoryDto: CategoryDto) {
     return this.productsService.updateCategory(+id, categoryDto);
@@ -74,8 +81,9 @@ export class ProductsController {
   @ApiResponse({ status: 204, description: 'Categoria removida com sucesso.', type: null })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
-  @Delete('category/:id')
   @HttpCode(204)
+  @Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
+  @Delete('category/:id')
   async removeCategory(@Param('id') id: number) {
     return this.productsService.removeCategory(+id);
   }
@@ -85,6 +93,7 @@ export class ProductsController {
   @ApiResponse({ status: 201, description: 'Produto adicionado com sucesso', type: Product })
   @ApiResponse({ status: 400, description: 'Dado inválido', type: RequestErrorSwagger })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
+  @Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
   @Post()
   async create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
@@ -98,6 +107,7 @@ export class ProductsController {
     isArray: true,
   })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
+  @IsPublic()
   @Get()
   async findAll() {
     return this.productsService.findAll();
@@ -107,6 +117,7 @@ export class ProductsController {
   @ApiResponse({ status: 200, description: 'Produto encontrado com sucesso.', type: Product })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
+  @IsPublic()
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.productsService.findOne(id);
@@ -116,6 +127,7 @@ export class ProductsController {
   @ApiResponse({ status: 200, description: 'Produto atualizado com sucesso.', type: Product })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
+  @Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productsService.update(id, updateProductDto);
@@ -125,15 +137,15 @@ export class ProductsController {
   @ApiResponse({ status: 204, description: 'Produto removido com sucesso.' })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
-  @Delete(':id')
   @HttpCode(204)
+  @Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
+  @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.productsService.remove(id);
   }
 
   @ApiOperation({ summary: 'Salva imagem de um produto no sistema.' })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
-  @Post('uploadImage/:id')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -146,6 +158,8 @@ export class ProductsController {
       },
     },
   })
+  @Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
+  @Post('uploadImage/:id')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -169,6 +183,7 @@ export class ProductsController {
   @ApiResponse({ status: 200, description: 'Imagem encontrada' })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
+  @IsPublic()
   @Get('getImage/:id')
   async findProductImage(@Param('id') id: string, @Res() res) {
     const imageUrl = await this.productsService.getImageUrl(id);

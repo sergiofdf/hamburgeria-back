@@ -8,6 +8,8 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 import { RequestErrorSwagger } from '../../shared/swagger/request-error.swagger';
 import { UnauthorizedSwagger } from '../../shared/swagger/unauthorized.swagger';
 import { FindByEmailDto } from './dto/find-by-email.dto';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { RoleOptions } from '@prisma/client';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -17,6 +19,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Retorna info do usuário logado' })
   @ApiResponse({ status: 200, description: 'Usuário logado', type: User })
+  @Roles(RoleOptions.ADMIN, RoleOptions.OWNER, RoleOptions.USER)
   @Get('me')
   getMe(@CurrentUser() user: User) {
     return user;
@@ -40,8 +43,9 @@ export class UsersController {
     isArray: true,
   })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
+  @Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
   @Get()
-  @IsPublic()
+  //@IsPublic()
   async findAll(): Promise<User[]> {
     return await this.usersService.findAll();
   }
@@ -50,6 +54,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Usuário encontrado com sucesso.', type: User })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
+  @Roles(RoleOptions.ADMIN, RoleOptions.OWNER, RoleOptions.USER)
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<User> {
     return await this.usersService.findOne(id);
@@ -59,6 +64,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Usuário encontrado com sucesso.', type: User })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
+  @Roles(RoleOptions.ADMIN, RoleOptions.OWNER, RoleOptions.USER)
   @Post('find-by-email')
   async findOneByEmail(@Body() body: FindByEmailDto): Promise<User> {
     const { email } = body;
@@ -69,6 +75,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Usuário atualizado com sucesso.', type: User })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
+  @Roles(RoleOptions.ADMIN, RoleOptions.OWNER, RoleOptions.USER)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: Partial<User>): Promise<User> {
     return await this.usersService.update(id, updateUserDto);
@@ -78,8 +85,9 @@ export class UsersController {
   @ApiResponse({ status: 204, description: 'Usuário removido com sucesso.' })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
-  @Delete(':id')
   @HttpCode(204)
+  @Roles(RoleOptions.ADMIN)
+  @Delete(':id')
   async remove(@Param('id') id: string): Promise<void> {
     return await this.usersService.remove(id);
   }
@@ -88,8 +96,9 @@ export class UsersController {
   @ApiResponse({ status: 204, description: 'Usuário desativado com sucesso.' })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
-  @Patch('deactivate/:id')
   @HttpCode(204)
+  @Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
+  @Patch('deactivate/:id')
   async Deactivate(@Param('id') id: string): Promise<void> {
     return await this.usersService.deactivate(id);
   }

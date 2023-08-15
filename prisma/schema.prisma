@@ -8,15 +8,15 @@ datasource db {
 }
 
 model User {
-  userId       String      @id @default(cuid())
+  userId       String        @id @default(cuid())
   name         String
-  email        String      @unique
+  email        String        @unique
   password     String
   phone_number String
-  user_active  Boolean     @default(true)
-  role         RoleOptions @default(USER)
-  created_at   DateTime    @default(now())
-  updated_at   DateTime    @updatedAt
+  user_active  Boolean       @default(true)
+  roles        RoleOptions[] @default([USER])
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
   address      Address?
   Order        Order[]
 

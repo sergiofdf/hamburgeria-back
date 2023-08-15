@@ -16,7 +16,7 @@ export class User {
   @ApiProperty()
   user_active: boolean;
   @ApiProperty()
-  role: RoleOptions;
+  roles: RoleOptions[];
   @ApiProperty({ format: 'date-time' })
   created_at: Date | string;
   @ApiProperty({ format: 'date-time' })
