@@ -1,5 +1,5 @@
 import { AddProductDto } from './dto/add-product.dto';
-import { PrismaService } from './../../prisma.service';
+import { PrismaService } from './../../prisma/prisma.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderProductDto } from './dto/update-order-product.dto';
