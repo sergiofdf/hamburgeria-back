@@ -23,7 +23,7 @@ import { UnauthorizedSwagger } from '../../shared/swagger/unauthorized.swagger';
 import { Category } from './entities/category.entity';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Roles } from '../../shared/decorators/roles.decorator';
-import { RoleOptions } from '@prisma/client';
+import { RoleOptions } from '../users/entities/role-options.entity';
 import { IsPublic } from '../../shared/decorators/is-public.decorator';
 
 @ApiTags('Products')

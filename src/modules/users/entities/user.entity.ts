@@ -1,4 +1,4 @@
-import { RoleOptions } from '@prisma/client';
+import { RoleOptions } from './role-options.entity';
 import { Address } from './address.entity';
 import { ApiProperty } from '@nestjs/swagger';
 

@@ -11,7 +11,7 @@ import { UpdateOrderProductDto } from './dto/update-order-product.dto';
 import { RemoveOrderProductDto } from './dto/remove-order-product.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Roles } from '../../shared/decorators/roles.decorator';
-import { RoleOptions } from '@prisma/client';
+import { RoleOptions } from '../users/entities/role-options.entity';
 
 @ApiTags('Orders')
 @ApiBearerAuth()

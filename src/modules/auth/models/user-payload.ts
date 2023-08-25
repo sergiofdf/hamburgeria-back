@@ -1,4 +1,4 @@
-import { RoleOptions } from '@prisma/client';
+import { RoleOptions } from '../../users/entities/role-options.entity';
 
 export interface UserPayload {
   sub: string;

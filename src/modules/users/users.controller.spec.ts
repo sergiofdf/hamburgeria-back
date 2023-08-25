@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
-import { RoleOptions } from '@prisma/client';
+import { RoleOptions } from '../users/entities/role-options.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -16,7 +16,7 @@ user1.email = 'teste@email.com';
 user1.password = '12345';
 user1.phone_number = '12 998765544';
 user1.user_active = true;
-user1.role = RoleOptions.USER;
+user1.roles = [RoleOptions.ADMIN];
 user1.created_at = new Date();
 user1.updated_at = new Date();
 
@@ -87,12 +87,8 @@ describe('UsersController', () => {
       body.email = 'teste@email.com';
       body.password = '12345';
       body.phone_number = '12 998765544';
-      jest
-        .spyOn(usersService, 'create')
-        .mockRejectedValueOnce(new BadRequestException());
-      expect(usersController.create(body)).rejects.toBeInstanceOf(
-        BadRequestException,
-      );
+      jest.spyOn(usersService, 'create').mockRejectedValueOnce(new BadRequestException());
+      expect(usersController.create(body)).rejects.toBeInstanceOf(BadRequestException);
     });
   });
 
@@ -114,32 +110,26 @@ describe('UsersController', () => {
     });
 
     it('should return not found if receive a not registered id', async () => {
-      jest
-        .spyOn(usersService, 'findOne')
-        .mockRejectedValueOnce(new NotFoundException());
+      jest.spyOn(usersService, 'findOne').mockRejectedValueOnce(new NotFoundException());
 
-      await expect(usersController.findOne('123')).rejects.toBeInstanceOf(
-        NotFoundException,
-      );
+      await expect(usersController.findOne('123')).rejects.toBeInstanceOf(NotFoundException);
     });
   });
 
   describe('findOneByEmail', () => {
     it('should return the user related to the given email', async () => {
-      const result = await usersController.findOneByEmail('teste@email.com');
+      const result = await usersController.findOneByEmail({ email: 'teste@email.com' });
 
       expect(result).toEqual(usersList[0]);
       expect(usersService.findOneByEmail).toBeCalled();
     });
 
     it('should return not found if receive a not registered email', async () => {
-      jest
-        .spyOn(usersService, 'findOneByEmail')
-        .mockRejectedValueOnce(new NotFoundException());
+      jest.spyOn(usersService, 'findOneByEmail').mockRejectedValueOnce(new NotFoundException());
 
-      await expect(
-        usersController.findOneByEmail('teste2@email.com'),
-      ).rejects.toBeInstanceOf(NotFoundException);
+      await expect(usersController.findOneByEmail({ email: 'teste2@email.com' })).rejects.toBeInstanceOf(
+        NotFoundException,
+      );
     });
   });
 
@@ -166,13 +156,9 @@ describe('UsersController', () => {
     it('should return not found if non registered id is given', async () => {
       const body = new UpdateUserDto();
       body.email = 'Abc';
-      jest
-        .spyOn(usersService, 'update')
-        .mockRejectedValueOnce(new NotFoundException());
+      jest.spyOn(usersService, 'update').mockRejectedValueOnce(new NotFoundException());
 
-      await expect(usersService.update('aaaaa', body)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(usersService.update('aaaaa', body)).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -185,13 +171,9 @@ describe('UsersController', () => {
     });
 
     it('should return not found if not registered id is given', async () => {
-      jest
-        .spyOn(usersService, 'remove')
-        .mockRejectedValueOnce(new NotFoundException());
+      jest.spyOn(usersService, 'remove').mockRejectedValueOnce(new NotFoundException());
 
-      await expect(usersService.remove('aaaa')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(usersService.remove('aaaa')).rejects.toThrow(NotFoundException);
     });
   });
 });

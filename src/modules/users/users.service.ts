@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from './../../prisma/prisma.service';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -95,7 +96,7 @@ export class UsersService {
     return user;
   }
 
-  async update(id: string, updateUserDto: Partial<User>): Promise<User> {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const { address, ...data } = updateUserDto;
 
     await this.findOne(id);

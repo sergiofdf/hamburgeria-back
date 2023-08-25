@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
@@ -9,7 +9,8 @@ import { RequestErrorSwagger } from '../../shared/swagger/request-error.swagger'
 import { UnauthorizedSwagger } from '../../shared/swagger/unauthorized.swagger';
 import { FindByEmailDto } from './dto/find-by-email.dto';
 import { Roles } from 'src/shared/decorators/roles.decorator';
-import { RoleOptions } from '@prisma/client';
+import { RoleOptions } from '../users/entities/role-options.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -77,7 +78,7 @@ export class UsersController {
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
   @Roles(RoleOptions.ADMIN, RoleOptions.OWNER, RoleOptions.USER)
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: Partial<User>): Promise<User> {
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {
     return await this.usersService.update(id, updateUserDto);
   }
 

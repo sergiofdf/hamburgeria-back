@@ -1,6 +1,7 @@
-import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 import { Address } from '../entities/address.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { RoleOptions } from '../entities/role-options.entity';
 
 export class CreateUserDto {
   @ApiProperty()
@@ -15,6 +16,10 @@ export class CreateUserDto {
   @ApiProperty()
   @IsNotEmpty({ message: 'Telefone deve ser informado!' })
   phone_number: string;
+  @ApiProperty()
+  @IsEnum(RoleOptions)
+  @IsOptional()
+  roles?: RoleOptions[];
   @ApiProperty()
   @IsOptional()
   address?: Address;
