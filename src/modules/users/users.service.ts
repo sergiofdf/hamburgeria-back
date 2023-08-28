@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from './../../prisma/prisma.service';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { RoleOptions } from './entities/role-options.entity';
 
 @Injectable()
 export class UsersService {
@@ -148,5 +149,13 @@ export class UsersService {
         user_active: false,
       },
     });
+  }
+
+  validateUserAccess(id: string, currentUser: User) {
+    if (!currentUser.roles.includes(RoleOptions.ADMIN) && !currentUser.roles.includes(RoleOptions.OWNER)) {
+      if (currentUser.userId != id) {
+        throw new UnauthorizedException();
+      }
+    }
   }
 }

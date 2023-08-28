@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
@@ -57,7 +57,8 @@ export class UsersController {
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
   @Roles(RoleOptions.ADMIN, RoleOptions.OWNER, RoleOptions.USER)
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<User> {
+  async findOne(@CurrentUser() user: User, @Param('id') id: string): Promise<User> {
+    this.usersService.validateUserAccess(id, user);
     return await this.usersService.findOne(id);
   }
 
