@@ -4,5 +4,5 @@ import { IsNotEmpty } from 'class-validator';
 export class CreateOrderDto {
   @ApiProperty()
   @IsNotEmpty({ message: 'O cliente deve ser informado!' })
-  user_id: string;
+  user_id: string | never;
 }

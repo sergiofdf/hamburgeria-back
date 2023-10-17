@@ -1,6 +1,6 @@
 export class OrderProduct {
   orderProductId: string;
   quantity: number;
-  order_id: string;
-  product_id: string;
+  order_id: number;
+  product_id: number;
 }

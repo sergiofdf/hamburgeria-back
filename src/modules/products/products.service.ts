@@ -86,7 +86,7 @@ export class ProductsService {
     return await this.prisma.product.findMany({});
   }
 
-  async findOne(id: string) {
+  async findOne(id: number) {
     const product = await this.prisma.product.findFirst({
       where: {
         productId: id,
@@ -100,7 +100,7 @@ export class ProductsService {
     return product;
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async update(id: number, updateProductDto: UpdateProductDto) {
     await this.findOne(id);
 
     const updatedProduct = await this.prisma.product.update({
@@ -112,7 +112,7 @@ export class ProductsService {
     return updatedProduct;
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     await this.findOne(id);
     await this.prisma.product.delete({
       where: {
@@ -121,7 +121,7 @@ export class ProductsService {
     });
   }
 
-  async updateImageUrl(productId: string, fileUrl: string) {
+  async updateImageUrl(productId: number, fileUrl: string) {
     await this.prisma.product.update({
       where: {
         productId,
@@ -132,7 +132,7 @@ export class ProductsService {
     });
   }
 
-  async getImageUrl(productId: string) {
+  async getImageUrl(productId: number) {
     const product = await this.prisma.product.findFirst({
       where: {
         productId,

@@ -8,10 +8,10 @@ export class AddProductDto {
   quantity: number;
   @ApiProperty()
   @IsNotEmpty({ message: 'O número do pedido deve ser informado!' })
-  order_id: string;
+  order_id: number;
   @ApiProperty()
   @IsNotEmpty({ message: 'O id do produto deve ser informado!' })
-  product_id: string;
+  product_id: number;
 }
 
 export class AddProductDtoArray {

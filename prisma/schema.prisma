@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum RoleOptions {
+  USER
+  OWNER
+  ADMIN
+}
+
 model User {
   userId       String        @id @default(cuid())
   name         String
@@ -14,7 +20,7 @@ model User {
   password     String
   phone_number String
   user_active  Boolean       @default(true)
-  roles        RoleOptions[] @default([RoleOptions.USER])
+  roles        RoleOptions[] @default([USER])
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
   address      Address?
@@ -38,14 +44,8 @@ model Address {
   @@map("addresses")
 }
 
-enum RoleOptions {
-  USER
-  OWNER
-  ADMIN
-}
-
 model Product {
-  productId   String   @id @default(cuid())
+  productId   Int      @id @default(autoincrement())
   name        String
   description String
   size        String
@@ -73,10 +73,11 @@ model Category {
 }
 
 model Order {
-  orderId    String      @id @default(cuid())
+  orderId    Int         @id @default(autoincrement())
   status     OrderStatus @default(WAITING_EVALUATION)
   created_at DateTime    @default(now())
   updated_at DateTime    @updatedAt
+  total      Decimal     @default(0)
 
   user User @relation(fields: [user_id], references: [userId])
 
@@ -103,8 +104,8 @@ model OrderProduct {
 
   order      Order   @relation(fields: [order_id], references: [orderId])
   product    Product @relation(fields: [product_id], references: [productId])
-  order_id   String
-  product_id String
+  order_id   Int
+  product_id Int
 
   @@map("orders_products")
 }

@@ -119,8 +119,8 @@ export class ProductsController {
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
   @IsPublic()
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.productsService.findOne(id);
+  async findOne(@Param('id') id: number) {
+    return this.productsService.findOne(+id);
   }
 
   @ApiOperation({ summary: 'Atualiza produto pelo Id informado.' })
@@ -129,8 +129,8 @@ export class ProductsController {
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
   @Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(id, updateProductDto);
+  async update(@Param('id') id: number, @Body() updateProductDto: UpdateProductDto) {
+    return this.productsService.update(+id, updateProductDto);
   }
 
   @ApiOperation({ summary: 'Remove produto pelo Id informado.' })
@@ -140,8 +140,8 @@ export class ProductsController {
   @HttpCode(204)
   @Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.productsService.remove(id);
+  async remove(@Param('id') id: number) {
+    return this.productsService.remove(+id);
   }
 
   @ApiOperation({ summary: 'Salva imagem de um produto no sistema.' })
@@ -174,8 +174,8 @@ export class ProductsController {
       }),
     }),
   )
-  async uploadFile(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
-    await this.productsService.updateImageUrl(id, file.filename);
+  async uploadFile(@Param('id') id: number, @UploadedFile() file: Express.Multer.File) {
+    await this.productsService.updateImageUrl(+id, file.filename);
     return { imagePath: file.filename };
   }
 
@@ -185,8 +185,8 @@ export class ProductsController {
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
   @IsPublic()
   @Get('getImage/:id')
-  async findProductImage(@Param('id') id: string, @Res() res) {
-    const imageUrl = await this.productsService.getImageUrl(id);
+  async findProductImage(@Param('id') id: number, @Res() res) {
+    const imageUrl = await this.productsService.getImageUrl(+id);
     return res.sendFile(process.cwd() + '/uploads/productsImages/' + imageUrl);
   }
 }

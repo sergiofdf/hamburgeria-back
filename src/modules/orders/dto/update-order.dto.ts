@@ -6,4 +6,7 @@ export class UpdateOrderDto {
   @ApiProperty()
   @IsNotEmpty()
   status: OrderStatus;
+  @ApiProperty()
+  @IsNotEmpty()
+  total: number;
 }

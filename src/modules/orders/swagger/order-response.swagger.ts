@@ -7,6 +7,9 @@ export class OrderProduct {
   @ApiProperty()
   quantity: number;
 
+  @ApiProperty()
+  total: number;
+
   @ApiProperty({ format: 'date-time' })
   created_at: string;
 
@@ -14,15 +17,15 @@ export class OrderProduct {
   updated_at: string;
 
   @ApiProperty()
-  order_id: string;
+  order_id: number;
 
   @ApiProperty()
-  product_id: string;
+  product_id: number;
 }
 
 export class OrderResponseSwagger {
   @ApiProperty()
-  orderId: string;
+  orderId: number;
 
   @ApiProperty()
   status: string;
@@ -42,7 +45,7 @@ export class OrderResponseSwagger {
 
 export class OrderResponseSwaggerWithoutOrderProducts {
   @ApiProperty()
-  orderId: string;
+  orderId: number;
 
   @ApiProperty()
   status: string;
