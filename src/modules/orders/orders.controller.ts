@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Query } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { AddProductDto } from './dto/add-product.dto';
@@ -13,6 +13,7 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { Roles } from '../../shared/decorators/roles.decorator';
 import { RoleOptions } from '../users/entities/role-options.entity';
 import { IsPublic } from 'src/shared/decorators/is-public.decorator';
+import { ParseDatePipe } from 'src/shared/utils/parse-date.pipe';
 
 @ApiTags('Orders')
 @ApiBearerAuth()
@@ -77,8 +78,11 @@ export class OrdersController {
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   //@Roles(RoleOptions.ADMIN, RoleOptions.OWNER, RoleOptions.USER)
   @Get()
-  async findAll() {
-    return await this.ordersService.findAll();
+  async findAll(
+    @Query('initialDate', new ParseDatePipe()) initialDate,
+    @Query('finalDate', new ParseDatePipe()) finalDate,
+  ) {
+    return await this.ordersService.findAll(initialDate, finalDate);
   }
 
   @ApiOperation({ summary: 'Busca pedido pelo Id informado.' })

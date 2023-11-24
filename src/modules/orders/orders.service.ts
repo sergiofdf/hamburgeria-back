@@ -17,27 +17,56 @@ export class OrdersService {
     });
   }
 
-  async findAll() {
-    const orders = await this.prisma.order.findMany({
-      include: {
-        orderProduct: {
-          select: {
-            quantity: true,
-            orderProductId: true,
-            product: {
-              select: {
-                productId: true,
-                name: true,
-                price: true,
-                category: true,
+  async findAll(initialDate?: Date, finalDate?: Date) {
+    if (initialDate && finalDate) {
+      initialDate.setUTCHours(3, 0, 0);
+      finalDate.setUTCHours(26, 59, 59);
+      const orders = await this.prisma.order.findMany({
+        where: {
+          updated_at: {
+            lte: finalDate,
+            gte: initialDate,
+          },
+        },
+        include: {
+          orderProduct: {
+            select: {
+              quantity: true,
+              orderProductId: true,
+              product: {
+                select: {
+                  productId: true,
+                  name: true,
+                  price: true,
+                  category: true,
+                },
               },
             },
           },
         },
-      },
-    });
-
-    return orders;
+      });
+      return orders;
+    } else {
+      const orders = await this.prisma.order.findMany({
+        include: {
+          orderProduct: {
+            select: {
+              quantity: true,
+              orderProductId: true,
+              product: {
+                select: {
+                  productId: true,
+                  name: true,
+                  price: true,
+                  category: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      return orders;
+    }
   }
 
   async findOne(id: number) {
