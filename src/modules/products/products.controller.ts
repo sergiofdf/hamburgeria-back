@@ -93,7 +93,8 @@ export class ProductsController {
   @ApiResponse({ status: 201, description: 'Produto adicionado com sucesso', type: Product })
   @ApiResponse({ status: 400, description: 'Dado inválido', type: RequestErrorSwagger })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
-  @Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
+  //@Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
+  @IsPublic()
   @Post()
   async create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
@@ -127,7 +128,8 @@ export class ProductsController {
   @ApiResponse({ status: 200, description: 'Produto atualizado com sucesso.', type: Product })
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
-  @Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
+  //@Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
+  @IsPublic()
   @Patch(':id')
   async update(@Param('id') id: number, @Body() updateProductDto: UpdateProductDto) {
     return this.productsService.update(+id, updateProductDto);
@@ -138,7 +140,8 @@ export class ProductsController {
   @ApiResponse({ status: 401, description: 'Não Autorizado', type: UnauthorizedSwagger })
   @ApiResponse({ status: 404, description: 'Não Encontrado', type: RequestErrorSwagger })
   @HttpCode(204)
-  @Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
+  @IsPublic()
+  //@Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
   @Delete(':id')
   async remove(@Param('id') id: number) {
     return this.productsService.remove(+id);
@@ -158,7 +161,8 @@ export class ProductsController {
       },
     },
   })
-  @Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
+  @IsPublic()
+  //@Roles(RoleOptions.ADMIN, RoleOptions.OWNER)
   @Post('uploadImage/:id')
   @UseInterceptors(
     FileInterceptor('file', {
